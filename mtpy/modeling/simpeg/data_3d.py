@@ -168,10 +168,20 @@ class Simpeg3DData:
 
     def _get_t_mode_sources(self, orientation):
         """Get the source for each mode"""
-        source_real = nsem.receivers.Point3DTipper(
+
+        # The Point3DTipper class was deprecated in SimPEG v0.23.0, and removed in
+        # v0.25.0, replaced by the Tipper class.
+        # The try-except block allows this to still work with versions of SimPEG
+        # before v0.23.0
+        try:
+            TipperClass = nsem.receivers.Tipper
+        except AttributeError:
+            TipperClass = nsem.receivers.Point3DTipper
+            
+        source_real = TipperClass(
             self.station_locations, orientation=orientation, component="real"
         )
-        source_imag = nsem.receivers.Point3DTipper(
+        source_imag = TipperClass(
             self.station_locations, orientation=orientation, component="imag"
         )
 
